@@ -18,7 +18,7 @@ const gallery = files
     return {
       filename: entry.name,
       src: `/photos/${encodeURIComponent(entry.name)}`,
-      title: meta.title || entry.name.replace(imagePattern, "").replace(/[-_]+/g, " "),
+      title: meta.title || "",
       caption: meta.caption || "",
       date: meta.date || "",
       category: meta.category || "Special Moments",
