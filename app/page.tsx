@@ -1,47 +1,49 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import galleryData from "./gallery-data.json";
 
-type Memory = {
-  filename: string; src: string; title: string; caption: string;
-  date: string; category: string; location: string;
-};
+type Memory = { filename: string; src: string; title: string; caption: string; date: string; category: string; location: string };
 const memories = galleryData as Memory[];
-const filters = ["All moments", "Daily Life", "Special Moments", "Creative Works"];
 
 export default function Home() {
-  const [filter, setFilter] = useState("All moments");
-  const [light, setLight] = useState(false);
-  const visible = useMemo(() => memories.filter((m) => filter === "All moments" || m.category === filter), [filter]);
-  return (
-    <main className={light ? "site light" : "site"}>
-      <header className="topbar wrap">
-        <a className="brand" href="#home">FOYSAL<span>.</span></a>
-        <nav><a href="#home">Home</a><a href="#memories">Memories</a><a href="#how-to-add">How to add</a></nav>
-        <button className="theme" onClick={() => setLight(!light)}>{light ? "☾ Dark" : "☼ Light"}</button>
-      </header>
-      <section className="hero wrap" id="home">
-        <div className="hero-copy"><p className="eyebrow">A PERSONAL VISUAL DIARY</p><h1>A life in<br/><em>moments.</em></h1><p className="intro">Little everyday things. Big unforgettable days. The people, places, and stories worth keeping close.</p><a className="button primary" href="#memories">Explore memories ↗</a><div className="stats"><strong>{memories.length.toString().padStart(2, "0")}<small> PHOTOS & STORIES</small></strong><strong>∞<small> MOMENTS TO KEEP</small></strong></div></div>
-        <div className="hero-art"><div className="orb"/><div className="note"><b>Collect the little things.</b><span>One photo, one story, one day at a time.</span></div></div>
+  const [liked, setLiked] = useState<Record<string, boolean>>({});
+  const [profileLiked, setProfileLiked] = useState(false);
+  return <main className="fb-page">
+    <header className="fb-header"><div className="fb-header-inner">
+      <a className="fb-mark" href="#top" aria-label="Home">f</a>
+      <div className="fb-search">🔍 <span>Search</span></div>
+      <nav className="fb-main-nav"><a className="selected" href="#top" aria-label="Home">⌂</a><a href="#posts">▤</a><a href="#photos">▧</a></nav>
+      <a className="fb-me" href="#top"><span className="mini-profile">F</span><b>Foysal</b></a>
+    </div></header>
+    <section className="fb-profile-shell" id="top">
+      <div className="fb-cover">
+        <img src="/photos/cover.jpg" alt="Foysal cover photo" onError={(e)=>{e.currentTarget.style.display="none"}} />
+        <div className="cover-fallback"><b>Foysal</b></div>
+      </div>
+      <div className="fb-profile-info">
+        <div className="fb-avatar"><img src="/photos/profile.jpg" alt="Foysal profile picture" onError={(e)=>{e.currentTarget.style.display="none"}}/><span>F</span></div>
+        <div className="fb-profile-name"><h1>Foysal</h1><p>Personal profile</p></div>
+        <div className="fb-profile-buttons"><button className={profileLiked ? "fb-blue liked" : "fb-blue"} onClick={()=>setProfileLiked(!profileLiked)}>{profileLiked ? "✓ Liked" : "👍 Like"}</button><a className="fb-gray" href="#photos">▧ Photos</a></div>
+      </div>
+      <nav className="fb-tabs"><a className="active" href="#posts">Posts</a><a href="#photos">Photos</a><a href="#about">About</a></nav>
+    </section>
+    <div className="fb-main-content">
+      <aside className="fb-side">
+        <section className="fb-box"><h2>Intro</h2><p className="fb-intro">👋 Welcome to my profile!</p><div className="fb-info-row">🌐 <span>Personal profile website</span></div><div className="fb-info-row">📷 <span>Photos & memories</span></div><button className={profileLiked ? "fb-side-like liked" : "fb-side-like"} onClick={()=>setProfileLiked(!profileLiked)}>{profileLiked ? "✓ Liked" : "👍 Like profile"}</button></section>
+        <section className="fb-box" id="photos"><div className="fb-box-title"><h2>Photos</h2><a href="#photos-grid">See all</a></div>{memories.length ? <div className="fb-mini-grid">{memories.slice(0,6).map(m=><a key={m.filename} href={m.src}><img src={m.src} alt="Foysal photo" loading="lazy"/></a>)}</div> : <p className="fb-muted">Photos will appear here.</p>}</section>
+      </aside>
+      <section className="fb-posts" id="posts">
+        <div className="fb-box fb-composer"><div className="fb-composer-top"><span className="mini-profile">F</span><span>What’s on your mind, Foysal?</span></div><div className="fb-composer-bottom">▧ <span>Photo</span><span>·</span><span>Share a memory</span></div></div>
+        {memories.length ? memories.map(m=><article className="fb-box fb-post" key={m.filename}>
+          <div className="fb-post-author"><span className="mini-profile">F</span><div><b>Foysal</b><small>{m.date || "Shared a memory"} · 🌐</small></div><span className="fb-more">•••</span></div>
+          {m.caption || m.title ? <p className="fb-post-caption">{m.caption || m.title}</p> : null}
+          <img className="fb-post-photo" src={m.src} alt="Photo shared by Foysal" loading="lazy"/>
+          <div className="fb-post-actions"><button className={liked[m.filename] ? "liked" : ""} onClick={()=>setLiked(prev=>({...prev,[m.filename]:!prev[m.filename]}))}>{liked[m.filename] ? "👍 Liked" : "👍 Like"}</button><button onClick={()=>navigator.clipboard?.writeText(window.location.href)}>↗ Share</button></div>
+        </article>) : <article className="fb-box fb-empty"><h2>Welcome to Foysal’s profile</h2><p>Photos shared on this profile will appear here.</p></article>}
+        <section className="fb-box fb-about" id="about"><h2>About Foysal</h2><p>This is my personal profile — a place for photos and memories.</p></section>
       </section>
-      <section className="wrap section" id="memories">
-        <div className="section-head"><div><p className="eyebrow">THE MEMORY WALL</p><h2>Moments worth keeping.</h2><p className="muted">Every photo holds a story. Here are mine.</p></div><span className="count">{visible.length} {visible.length === 1 ? "moment" : "moments"}</span></div>
-        <div className="filters">{filters.map((f) => <button key={f} className={filter === f ? "chip active" : "chip"} onClick={() => setFilter(f)}>{f}</button>)}</div>
-        <div className="gallery">{visible.length ? visible.map((m) => {
-          const hasDetails = Boolean(m.title || m.caption || m.date || m.location);
-          return <article className="card" key={m.filename}>
-            <div className="photo"><img src={m.src} alt={m.title || "Photo memory"} loading="lazy"/></div>
-            {hasDetails ? <div className="card-body">
-              {m.title ? <h3>{m.title}</h3> : null}
-              {m.caption ? <p className="caption">{m.caption}</p> : null}
-              {m.date || m.location ? <div className="meta">{m.date ? <span>{m.date}</span> : null}{m.location ? <span>⌖ {m.location}</span> : null}</div> : null}
-            </div> : null}
-          </article>;
-        }) : <div className="empty"><b>No photos in this category yet.</b><p>Upload a photo to the folder and it will appear here after the site rebuilds.</p></div>}</div>
-      </section>
-      <section className="wrap section how" id="how-to-add"><p className="eyebrow">KEEP THE STORIES COMING</p><h2>Add a photo in two simple steps.</h2><div className="steps"><article><span>01</span><h3>Upload the photo</h3><p>Open the repository on GitHub and upload your image into <code>public/photos/</code>. Commit the change to <code>main</code>.</p></article><article><span>02</span><h3>Write the story</h3><p>Edit <code>public/photos/captions.json</code>. Add a title, caption, date, location, and category using the exact photo filename.</p></article><article><span>03</span><h3>It goes live</h3><p>GitHub Actions rebuilds the Next.js site and publishes it automatically. Wait a minute or two, then refresh the website.</p></article></div><a className="button" href="https://github.com/foysaltomal/foysaltomal.github.io/tree/main/public/photos" target="_blank" rel="noreferrer">Open photo folder on GitHub ↗</a></section>
-      <footer className="wrap footer"><span>© {new Date().getFullYear()} <b>Foysal Tomal</b> · A life in moments.</span><span>Built with Next.js · Published on GitHub Pages</span></footer>
-    </main>
-  );
+    </div>
+    <footer className="fb-footer">Foysal · Personal profile</footer>
+  </main>;
 }
