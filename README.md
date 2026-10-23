@@ -1,23 +1,26 @@
-# Foysal Tomal 👋
+# Foysal Tomal — A Life in Moments
 
-Welcome to my personal website repository!
+A personal visual diary for daily photos, special memories, and creative work.
 
 🌐 **Website:** https://foysaltomal.github.io
 
-## About
+## Features
 
-This repository hosts my personal website using GitHub Pages.
+- Responsive personal homepage
+- Memory gallery with Daily Life, Special Moments, and Creative Works categories
+- Add a photo with a title, date, location, and note
+- Filter memories by category
+- Dark and light themes
+- Photo memories saved in the current browser using IndexedDB
 
-## Built With
+## Important storage note
 
-- HTML
-- CSS
-- GitHub Pages
+This first version stores uploaded photos locally in the browser on the device where they are added. Photos are **not uploaded to GitHub**, are not synced across devices, and clearing browser site data may remove them. This is a front-end prototype, not a secure private cloud photo service.
 
-## Connect With Me
+## Hosting
 
-- **GitHub:** [@foysaltomal](https://github.com/foysaltomal)
+This site is designed for GitHub Pages. In the repository settings, open **Pages** and select the `main` branch and `/ (root)` folder as the publishing source if Pages is not already enabled.
 
----
+## Built with
 
-Thanks for visiting!
+HTML, CSS, JavaScript, and browser IndexedDB.
