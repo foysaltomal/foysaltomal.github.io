@@ -53,12 +53,13 @@ function render(){
  '<label class="field">Description / Caption<textarea data-k="caption" placeholder="ছবির বিবরণ লিখো">'+safe(item.caption||'')+'</textarea></label>'+
  '<label class="field">তারিখ<input data-k="date" type="date" value="'+safe(item.date||'')+'"></label>'+
  '<label class="field">Location<input data-k="location" value="'+safe(item.location||'')+'" placeholder="ছবির স্থান"></label>'+
+ '<label class="field"><input data-k="enabled" type="checkbox" '+(item.enabled!==false?'checked':'')+' style="width:auto;display:inline;margin-right:8px"> ওয়েবসাইটের গ্যালারিতে দেখাবে</label>'+
  '<label class="field">Category<select data-k="category"><option '+(item.category==='Daily Life'?'selected':'')+'>Daily Life</option><option '+(item.category==='Special Moments'?'selected':'')+'>Special Moments</option><option '+(item.category==='Creative Works'?'selected':'')+'>Creative Works</option><option '+(item.category==='Profile'?'selected':'')+'>Profile</option></select></label>'+
  '<button class="btn" type="button" data-remove>এই ছবি তালিকা থেকে বাদ দাও</button>';
  card.append(image,form);photos.append(card);
- form.querySelectorAll('[data-k]').forEach(input=>input.addEventListener('input',()=>{
+ form.querySelectorAll('[data-k]').forEach(input=>input.addEventListener(input.type==='checkbox'?'change':'input',()=>{
  const obj=data[name]&&typeof data[name]==='object'?data[name]:{};
- obj[input.dataset.k]=input.value;data[name]=obj;setStatus('পরিবর্তন হয়েছে — JSON ডাউনলোড করে সংরক্ষণ করো।');
+ obj[input.dataset.k]=input.type==='checkbox'?input.checked:input.value;data[name]=obj;setStatus('পরিবর্তন হয়েছে — JSON ডাউনলোড করে সংরক্ষণ করো।');
  }));
  form.querySelector('[data-remove]').addEventListener('click',()=>{if(confirm('এই ছবির এন্ট্রি JSON থেকে বাদ দিতে চাও?')){delete data[name];photoFiles.splice(photoFiles.indexOf(name),photoFiles.includes(name)?1:0);render();setStatus('এন্ট্রি বাদ দেওয়া হয়েছে। JSON ডাউনলোড করে সংরক্ষণ করো।')}});
  });
@@ -96,7 +97,7 @@ document.getElementById('importFile').addEventListener('change',async e=>{
 document.getElementById('addBtn').addEventListener('click',()=>{
  const name=prompt('ছবির সঠিক filename লিখো (যেমন: my-photo.jpg):');if(!name)return;
  if(name.includes('/')||name.includes('\\')){alert('শুধু filename লিখো, folder path নয়।');return}
- if(!data[name])data[name]={title:'',caption:'',date:'',location:'',category:'Special Moments'};
+ if(!data[name])data[name]={title:'',caption:'',date:'',location:'',category:'Special Moments',enabled:true};
  if(!photoFiles.includes(name))photoFiles.push(name);render();setStatus('নতুন ছবির এন্ট্রি যোগ হয়েছে। ছবিটি public/photos ফোল্ডারে থাকলে preview দেখা যাবে।');
 });
 loadExisting();
