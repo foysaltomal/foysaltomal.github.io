@@ -12,7 +12,7 @@ let files = [];
 try { files = await readdir(photosDir, { withFileTypes: true }); }
 catch (error) { if (error.code !== "ENOENT") throw error; }
 const gallery = files
-  .filter((entry) => entry.isFile() && imagePattern.test(entry.name))
+  .filter((entry) => entry.isFile() && imagePattern.test(entry.name) && captions[entry.name]?.enabled !== false)
   .map((entry) => {
     const meta = captions[entry.name] ?? {};
     return {
