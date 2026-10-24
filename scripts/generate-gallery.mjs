@@ -12,7 +12,7 @@ let files = [];
 try { files = await readdir(photosDir, { withFileTypes: true }); }
 catch (error) { if (error.code !== "ENOENT") throw error; }
 const gallery = files
-  .filter((entry) => entry.isFile() && imagePattern.test(entry.name) && captions[entry.name]?.enabled !== false)
+  .filter((entry) => entry.isFile() && imagePattern.test(entry.name) && captions[entry.name]?.enabled !== false && (captions[entry.name]?.category || "Special Moments") !== "Profile")
   .map((entry) => {
     const meta = captions[entry.name] ?? {};
     return {
@@ -25,6 +25,6 @@ const gallery = files
       location: meta.location || "",
     };
   })
-  .sort((a, b) => (b.date || "").localeCompare(a.date || "") || a.filename.localeCompare(b.filename));
+  .sort((a, b) => (b.date || "").localeCompare(a.date || "") || b.filename.localeCompare(a.filename));
 await writeFile(outputFile, JSON.stringify(gallery, null, 2) + "\n");
 console.log(`Prepared ${gallery.length} photo(s) for the gallery.`);
