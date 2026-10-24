@@ -1,4 +1,4 @@
-name: Build and deploy photo journal
+name: Deploy Foysal profile website
 
 on:
   push:
@@ -20,20 +20,17 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Install dependencies
-        run: npm install
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-      - name: Build static Next.js website
-        run: npm run build
+      - name: Prepare static profile site
+        run: |
+          mkdir -p _site/photos
+          cp index.html _site/index.html
+          if [ -d public/photos ]; then cp -R public/photos/. _site/photos/; fi
       - name: Upload website artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: ./_site
   deploy:
     environment:
       name: github-pages
