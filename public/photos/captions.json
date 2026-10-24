@@ -4,34 +4,39 @@
     "caption": "",
     "date": "",
     "location": "",
-    "category": "Special Moments"
+    "category": "Special Moments",
+    "enabled": true
   },
   "IMG_20260828_012628.jpg": {
     "title": "আকাশ টা বিবর্ন্ন ",
     "caption": "আকাশটা আজ বিবর্ণ, তবুও তার নীরবতায় মিশে আছে এক অদ্ভুত মায়া। কখনো কখনো রংহীন আকাশও মনের না-বলা কথাগুলো সুন্দর করে বলে দেয়।",
     "date": "",
     "location": "",
-    "category": "Special Moments"
+    "category": "Special Moments",
+    "enabled": true
   },
   "IMG_20260831_013141.jpg": {
     "title": "নীরব মুহূর্ত",
     "caption": "কিছু মুহূর্ত শব্দ ছাড়াই অনেক কথা বলে যায়। সময় থেমে থাকে না, তবুও কিছু স্মৃতি মনের ভেতর নীরবে থেকে যায়—একান্ত নিজের হয়ে।",
     "date": "",
     "location": "",
-    "category": "Special Moments"
+    "category": "Special Moments",
+    "enabled": true
   },
   "cover.jpeg": {
     "title": "",
     "caption": "",
     "date": "",
     "location": "",
-    "category": "Profile"
+    "category": "Profile",
+    "enabled": true
   },
   "profile.jpeg": {
     "title": "",
     "caption": "",
     "date": "",
     "location": "",
-    "category": "Profile"
+    "category": "Profile",
+    "enabled": true
   }
 }
