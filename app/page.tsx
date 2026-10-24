@@ -18,11 +18,11 @@ export default function Home() {
     </div></header>
     <section className="fb-profile-shell" id="top">
       <div className="fb-cover">
-        <img src="/photos/cover.jpg" alt="Foysal cover photo" onError={(e)=>{e.currentTarget.style.display="none"}} />
+        <img src="/photos/cover.jpeg" alt="Foysal cover photo" onError={(e)=>{e.currentTarget.style.display="none"}} />
         <div className="cover-fallback"><b>Foysal</b></div>
       </div>
       <div className="fb-profile-info">
-        <div className="fb-avatar"><img src="/photos/profile.jpg" alt="Foysal profile picture" onError={(e)=>{e.currentTarget.style.display="none"}}/><span>F</span></div>
+        <div className="fb-avatar"><img src="/photos/profile.jpeg" alt="Foysal profile picture" onError={(e)=>{e.currentTarget.style.display="none"}}/><span>F</span></div>
         <div className="fb-profile-name"><h1>Foysal</h1><p>Personal profile</p></div>
         <div className="fb-profile-buttons"><button className={profileLiked ? "fb-blue liked" : "fb-blue"} onClick={()=>setProfileLiked(!profileLiked)}>{profileLiked ? "✓ Liked" : "👍 Like"}</button><a className="fb-gray" href="#photos">▧ Photos</a></div>
       </div>
