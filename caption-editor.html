@@ -17,6 +17,7 @@
 <p>এডিট শেষ হলে “JSON ডাউনলোড” চাপবে। ডাউনলোড হওয়া JSON ফাইলটি আমাকে দিলে আমি ওয়েবসাইটে আপডেট করতে সাহায্য করব। এই পেজ থেকে সরাসরি লাইভ ওয়েবসাইটের ফাইল বদলায় না।</p>
 <div class="toolbar">
 <button class="btn primary" id="download">JSON ডাউনলোড</button>
+<button class="btn green" id="copyJson">JSON টেক্সট কপি করো</button>
 <button class="btn" id="importBtn">আগের JSON লোড করো</button>
 <button class="btn" id="addBtn">+ ছবির নাম যোগ করো</button>
 <input id="importFile" type="file" accept=".json,application/json" hidden>
@@ -70,6 +71,20 @@ async function loadExisting(){
 document.getElementById('download').addEventListener('click',()=>{
  const blob=new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json;charset=utf-8'});
  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='captions.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);setStatus('captions.json ডাউনলোড করা হয়েছে। ফাইলটি আমাকে পাঠাতে পারবে।');
+});
+document.getElementById('copyJson').addEventListener('click',async()=>{
+ const textToCopy=JSON.stringify(data,null,2);
+ try{
+  if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(textToCopy);}
+  else{
+   const ta=document.createElement('textarea');ta.value=textToCopy;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();
+   const ok=document.execCommand('copy');ta.remove();if(!ok)throw new Error('copy failed');
+  }
+  setStatus('JSON টেক্সট কপি হয়েছে। এখন চ্যাটে এসে পেস্ট করে পাঠাও।');
+ }catch(err){
+  const ta=document.createElement('textarea');ta.value=textToCopy;ta.style.width='100%';ta.style.minHeight='220px';ta.style.padding='10px';ta.style.marginTop='12px';
+  photos.prepend(ta);ta.focus();ta.select();setStatus('স্বয়ংক্রিয় কপি হয়নি। নিচের নির্বাচিত JSON টেক্সট কপি করে চ্যাটে পেস্ট করো।');
+ }
 });
 document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change',async e=>{
