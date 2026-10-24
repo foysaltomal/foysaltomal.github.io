@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1877f2">
+<title>Photo Caption Editor | Foysal</title>
+<style>
+:root{font-family:Arial,"Noto Sans Bengali",sans-serif;color:#1c1e21;background:#f0f2f5}*{box-sizing:border-box}body{margin:0}.top{background:#fff;padding:16px max(16px,calc((100% - 960px)/2));box-shadow:0 1px 4px #0001;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.top h1{font-size:22px;margin:0}.top a{color:#1877f2;text-decoration:none;font-weight:bold}.wrap{max-width:960px;margin:20px auto;padding:0 12px}.intro,.photo{background:white;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px #0001}.intro p{line-height:1.6;margin:8px 0}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:0;border-radius:8px;padding:11px 14px;font-weight:bold;cursor:pointer;background:#e4e6eb;color:#1c1e21}.primary{background:#1877f2;color:white}.green{background:#16803c;color:white}.photo{display:grid;grid-template-columns:180px minmax(0,1fr);gap:16px}.photo img{width:100%;height:150px;object-fit:cover;border-radius:8px;background:#f0f2f5}.filename{font-size:12px;color:#65676b;overflow-wrap:anywhere;margin:8px 0}.field{display:block;font-size:14px;font-weight:bold;margin:10px 0}.field input,.field textarea,.field select{display:block;width:100%;font:inherit;font-weight:normal;border:1px solid #ccd0d5;border-radius:8px;padding:10px;margin-top:5px;background:white}.field textarea{min-height:82px;resize:vertical}.status{font-size:13px;color:#65676b;margin-top:8px}.empty{padding:24px;text-align:center;color:#65676b}@media(max-width:580px){.photo{grid-template-columns:1fr}.photo img{height:210px}.top h1{font-size:19px}}
+</style>
+</head>
+<body>
+<header class="top"><h1>🖼️ Photo Caption Editor</h1><a href="./">← মূল ওয়েবসাইটে ফিরে যাও</a></header>
+<main class="wrap">
+<section class="intro">
+<p><strong>এখানে ছবির Caption, Description, Date, Location ও Category এডিট করতে পারবে।</strong></p>
+<p>এডিট শেষ হলে “JSON ডাউনলোড” চাপবে। ডাউনলোড হওয়া JSON ফাইলটি আমাকে দিলে আমি ওয়েবসাইটে আপডেট করতে সাহায্য করব। এই পেজ থেকে সরাসরি লাইভ ওয়েবসাইটের ফাইল বদলায় না।</p>
+<div class="toolbar">
+<button class="btn primary" id="download">JSON ডাউনলোড</button>
+<button class="btn" id="importBtn">আগের JSON লোড করো</button>
+<button class="btn" id="addBtn">+ ছবির নাম যোগ করো</button>
+<input id="importFile" type="file" accept=".json,application/json" hidden>
+</div><div class="status" id="status">ছবির তালিকা ও captions.json লোড হচ্ছে…</div>
+</section>
+<div id="photos"></div>
+</main>
+<script>
+const photoFiles = [
+"IMG_20260812_005914.png.jpg",
+"IMG_20260828_012628.jpg",
+"IMG_20260831_013141.jpg",
+"cover.jpeg",
+"profile.jpeg"
+];
+let data = {};
+const photos = document.getElementById('photos');
+const statusEl = document.getElementById('status');
+const clean = s => String(s || '');
+function setStatus(s){statusEl.textContent=s}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+ photos.innerHTML='';
+ const names=[...new Set([...photoFiles,...Object.keys(data)])].filter(n=>n && !n.endsWith('.json') && !n.endsWith('.md'));
+ if(!names.length){photos.innerHTML='<div class="empty">এখনও কোনো ছবির নাম নেই। “ছবির নাম যোগ করো” চাপো।</div>';return}
+ names.forEach(name=>{
+ const item=data[name] && typeof data[name]==='object' ? data[name] : {};
+ const card=document.createElement('section');card.className='photo';
+ const image=document.createElement('img');image.src='https://raw.githubusercontent.com/foysaltomal/foysaltomal.github.io/main/public/photos/'+encodeURIComponent(name).replace(/%2F/g,'/')+'?v=20261024';image.alt=name;image.onerror=()=>{image.style.display='none'};
+ const form=document.createElement('div');
+ form.innerHTML='<div class="filename">'+safe(name)+'</div>'+
+ '<label class="field">Caption / Title<input data-k="title" value="'+safe(item.title||'')+'" placeholder="ছবির শিরোনাম"></label>'+
+ '<label class="field">Description / Caption<textarea data-k="caption" placeholder="ছবির বিবরণ লিখো">'+safe(item.caption||'')+'</textarea></label>'+
+ '<label class="field">তারিখ<input data-k="date" type="date" value="'+safe(item.date||'')+'"></label>'+
+ '<label class="field">Location<input data-k="location" value="'+safe(item.location||'')+'" placeholder="ছবির স্থান"></label>'+
+ '<label class="field">Category<select data-k="category"><option '+(item.category==='Daily Life'?'selected':'')+'>Daily Life</option><option '+(item.category==='Special Moments'?'selected':'')+'>Special Moments</option><option '+(item.category==='Creative Works'?'selected':'')+'>Creative Works</option><option '+(item.category==='Profile'?'selected':'')+'>Profile</option></select></label>'+
+ '<button class="btn" type="button" data-remove>এই ছবি তালিকা থেকে বাদ দাও</button>';
+ card.append(image,form);photos.append(card);
+ form.querySelectorAll('[data-k]').forEach(input=>input.addEventListener('input',()=>{
+ const obj=data[name]&&typeof data[name]==='object'?data[name]:{};
+ obj[input.dataset.k]=input.value;data[name]=obj;setStatus('পরিবর্তন হয়েছে — JSON ডাউনলোড করে সংরক্ষণ করো।');
+ }));
+ form.querySelector('[data-remove]').addEventListener('click',()=>{if(confirm('এই ছবির এন্ট্রি JSON থেকে বাদ দিতে চাও?')){delete data[name];photoFiles.splice(photoFiles.indexOf(name),photoFiles.includes(name)?1:0);render();setStatus('এন্ট্রি বাদ দেওয়া হয়েছে। JSON ডাউনলোড করে সংরক্ষণ করো।')}});
+ });
+}
+async function loadExisting(){
+ try{const r=await fetch('./public/photos/captions.json?v=20261024',{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const json=await r.json();if(json&&typeof json==='object')data=json;setStatus('লোড হয়েছে। '+Object.keys(data).length+'টি JSON এন্ট্রি পাওয়া গেছে।');}
+ catch(e){setStatus('অনলাইন captions.json লোড করা যায়নি। চাইলে “আগের JSON লোড করো” দিয়ে ফাইল বেছে নাও।');}
+ render();
+}
+document.getElementById('download').addEventListener('click',()=>{
+ const blob=new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json;charset=utf-8'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='captions.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);setStatus('captions.json ডাউনলোড করা হয়েছে। ফাইলটি আমাকে পাঠাতে পারবে।');
+});
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{const j=JSON.parse(await f.text());if(!j||typeof j!=='object'||Array.isArray(j))throw new Error('JSON must be an object');data=j;render();setStatus('JSON ফাইল লোড হয়েছে।');}
+ catch(err){alert('এই JSON ফাইলটি পড়া যাচ্ছে না। সঠিক captions.json বেছে নাও।');}
+ e.target.value='';
+});
+document.getElementById('addBtn').addEventListener('click',()=>{
+ const name=prompt('ছবির সঠিক filename লিখো (যেমন: my-photo.jpg):');if(!name)return;
+ if(name.includes('/')||name.includes('\\')){alert('শুধু filename লিখো, folder path নয়।');return}
+ if(!data[name])data[name]={title:'',caption:'',date:'',location:'',category:'Special Moments'};
+ if(!photoFiles.includes(name))photoFiles.push(name);render();setStatus('নতুন ছবির এন্ট্রি যোগ হয়েছে। ছবিটি public/photos ফোল্ডারে থাকলে preview দেখা যাবে।');
+});
+loadExisting();
+</script>
+</body>
+</html>
