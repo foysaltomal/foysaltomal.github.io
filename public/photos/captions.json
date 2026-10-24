@@ -1,9 +1,37 @@
 {
-  "example-photo.jpg": {
-    "title": "Replace this example",
-    "caption": "Delete this example entry and add a story for each photo using its exact filename.",
-    "date": "2026-10-23",
+  "IMG_20260812_005914.png.jpg": {
+    "title": "এটা মনে হয় আমি",
+    "caption": "",
+    "date": "",
     "location": "",
     "category": "Special Moments"
+  },
+  "IMG_20260828_012628.jpg": {
+    "title": "",
+    "caption": "",
+    "date": "",
+    "location": "",
+    "category": "Special Moments"
+  },
+  "IMG_20260831_013141.jpg": {
+    "title": "",
+    "caption": "",
+    "date": "",
+    "location": "",
+    "category": "Special Moments"
+  },
+  "cover.jpeg": {
+    "title": "",
+    "caption": "",
+    "date": "",
+    "location": "",
+    "category": "Profile"
+  },
+  "profile.jpeg": {
+    "title": "",
+    "caption": "",
+    "date": "",
+    "location": "",
+    "category": "Profile"
   }
 }
